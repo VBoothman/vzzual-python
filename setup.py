@@ -24,14 +24,15 @@ setup(
     packages = ['vzzual'],
     version = VERSION,
     description = 'Official python wrapper for vzzual api',
-    author='Dinesh Yadav',
-    author_email='dineshyadav.iiit@gmail.com',
+    author='Vzzual',
+    author_email='support@vzzual.com',
     license='MIT License',
     install_requires=[
-      'requests',
+      'requests>=2.2.1',
       'python-dateutil',
       'simplejson',
-      'nose2'
+      'nose2>=0.4.7',
+      'httpretty>=0.8.0'
     ],
     long_description=long_description
 )

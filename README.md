@@ -7,6 +7,17 @@ python-vzzual is a python client for [Vzzual](http://vzzual.com)
 
 Documentation is available at [http://www.vzzual.com/page_API.html](http://www.vzzual.com/page_API.html)
 
+## How to use
+
+```sh
+    import vzzual
+    vzzual.init('<api_key>', log_level=logging.DEBUG)
+    req = vzzual.Request.create(
+                    filters=[{ 'filter': 'facedetect' }, { 'filter': 'exif' }])
+    req.add_files('image.jpg')
+    results = req.get_results(wait=True)
+```
+
 ## How to test
 
 1. Dump your vzzual api key into vzzual.conf
@@ -21,16 +32,3 @@ Documentation is available at [http://www.vzzual.com/page_API.html](http://www.v
   ```sh
     $] nose2
   ```
-
-## Licence
-
-(The MIT License)
-
-Copyright (c) 2013 Vzzual.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
