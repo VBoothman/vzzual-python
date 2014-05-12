@@ -1,0 +1,5 @@
+requests==2.2.1
+simplejson
+nose2==0.4.7
+
+-e git+git://github.com/gabrielfalcao/HTTPretty.git@79fbacfd7d45578f8910a1ca0217e1d2d564e656#egg=httpretty
