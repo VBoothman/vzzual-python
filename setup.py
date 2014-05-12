@@ -20,7 +20,7 @@ This is the official python client that wraps the Vzzual REST API (http://www.vz
 
 setup(
     name = 'vzzual',
-    url="https://github.com/imagemine/tools/blob/master/SDK/Python/python-vzzual",
+    url="https://github.com/vzzual/vzzual-python",
     packages = ['vzzual'],
     version = VERSION,
     description = 'Official python wrapper for vzzual api',
