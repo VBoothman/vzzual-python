@@ -175,6 +175,20 @@ class File(APIResource):
         else:
             return super(cls, File).create(**kwargs)
 
+    @classmethod
+    def find_by_id(cls, file_id):
+        url = base_url + "files/" + file_id
+        return cls.find(url)
+
+    def download(self, saveAt=None):
+        headers = token_auth()
+        headers.pop('Content-Type')
+        req = requests.get(self.file_url, headers=headers, verify=False)
+        if saveAt:
+            with open(saveAt, 'wb') as fp:
+                fp.write(req.content)
+
+        return req.content
 
 def apply_image_filters(filepath, filter_names=['facedetect']):
     available_filters = [x['name'] for x in get_filters()]

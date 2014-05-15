@@ -1,4 +1,5 @@
 import json
+import os
 import httpretty
 from time import sleep
 from nose2.compat import unittest
@@ -34,7 +35,7 @@ def mock_new_request():
                           '{"success" : "true" }')
 
     files = '{"count": 6, "previous": "null", "results": [{"tags": [], "filesize": 387280, "created": "2013-09-17T05:18:54.377Z", "url": "https://api.vzzual.com/files/2PRcFAoEZQu", "original_name": "sample.jpg", "original_url": "", "file_url": "<removed>", "id": "2PRcFAoEZQu", "visiblity": "private", "modified": "2013-09-17T05:18:54.377Z"}, {"tags": [], "filesize": 489, "created": "2013-10-17T17:34:36.702Z", "url": "https://api.vzzual.com/files/2PRcFAotjoJ", "original_name": "sample2.jpg", "original_url": "", "file_url": "<removed>", "id": "2PRcFAotjoJ", "visibility": "private", "modified": "2013-10-17T17:34:36.702Z"}], "next": "https://api.vzzual.com/files/?page=2"}'
-    file_data = '{"tags": [], "filesize": 357287, "created": "2013-10-17T17:39:01.471Z", "url": "https://api.vzzual.com/files/2PRcFB54AcB", "original_name": "sample3.jpg", "original_url": "<url>", "file_url": "<removed>", "id": "2PRcFB54AcB", "visibility": "private", "modified": "2013-10-17T17:39:01.471Z"}'
+    file_data = '{"tags": [], "filesize": 357287, "created": "2013-10-17T17:39:01.471Z", "url": "https://api.vzzual.com/files/2PRcFB54AcB", "original_name": "sample3.jpg", "original_url": "<url>", "file_url": "https://assets.vzzual.com/2PRcFB54AcB.jpg", "id": "2PRcFB54AcB", "visibility": "private", "modified": "2013-10-17T17:39:01.471Z"}'
 
     httpretty.register_uri(httpretty.POST,
                   'https://api.vzzual.com/requests/2PRcFApXydQ/files/',
@@ -52,7 +53,7 @@ def mock_new_request():
 
     httpretty.register_uri(httpretty.GET,
                             "https://api.vzzual.com/files/2PRcFB54AcB",
-                            files,
+                            file_data,
                             content_type=content_type_json)
 
     mock_files()
@@ -193,5 +194,16 @@ class TestBase(unittest.TestCase):
         req.delete()
         self.assertEqual(req.state, 'done')
         self.assertIsNotNone(res)
+
+    def test_download(self):
+        mock_new_request()
+        vfile = vzzual.File.find_by_id('2PRcFB54AcB')
+        self.assertIsNotNone(vfile.file_url)
+
+        with open('tests/test.jpg', 'rb') as fp:
+            httpretty.register_uri(httpretty.GET, vfile.file_url, body=fp.read())
+
+        vfile.download('tests/out.jpg')
+        self.assertTrue(os.path.exists('tests/out.jpg'))
 
 
