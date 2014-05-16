@@ -11,11 +11,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'vzzual'))
 from version import VERSION
 
 long_description = '''
-The Vzzual API is designed to allow image and video processing algorithms to
-easily run over very large quantities of data, distributed over many servers on
-the Vzzual infrastructure.
+The Vzzual API is designed to allow web and app developers to incorporate image and video analysis into their applications my off-loading processing to Vzzual.
 
-This is the official python client that wraps the Vzzual REST API (http://www.vzzual.com/page_API.html).
+This is the official python client that wraps the Vzzual REST-like API (http://www.vzzual.com/page_API.html).
 '''
 
 setup(
@@ -23,7 +21,7 @@ setup(
     url="https://github.com/vzzual/vzzual-python",
     packages = ['vzzual'],
     version = VERSION,
-    description = 'Official python wrapper for vzzual api',
+    description = 'Official python wrapper for the Vzzual API',
     author='Vzzual',
     author_email='support@vzzual.com',
     license='MIT License',
