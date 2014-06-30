@@ -20,7 +20,7 @@ if not os.path.exists(API_KEY_FILENAME):
     sys.exit(1)
 
 with open(API_KEY_FILENAME, 'r') as fp:
-    token =  fp.read()
+    token = fp.read().strip()
 
 vzzual.init(token)
 sample_image = os.path.join(current_dir, 'images/sample.jpg')
@@ -38,10 +38,9 @@ elif state == 'done':
     pprint.pprint(results)
 
     ## Get filter result for thumbnail
-    thumbnail = json.loads(
-        next(r for r in results if r['filter'] == 'thumbnail')['result'])
+    thumb = next(r for r in results if r['filter'] == 'thumbnail')['result']
 
-    vfile = vzzual.File.find_by_id(thumbnail['file_id'])
+    vfile = vzzual.File.find(thumb['thumbnail'])
     thumbnail_path = os.path.join(current_dir, 'images', 'thumbnail.jpg')
 
     print "Downloading thumbnail from %s .. " % vfile.file_url
