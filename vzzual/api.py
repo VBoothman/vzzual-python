@@ -1,4 +1,5 @@
 
+import os.path
 import logging
 import json
 import time
@@ -56,7 +57,9 @@ def get_filters():
 class APIResource(object):
     resource_type = None
 
-    def __init__(self, json={}):
+    def __init__(self, json=None):
+        if json is None:
+            json = {}
         self._json_data = json
         for key in json:
             setattr(self, key, json[key])
@@ -142,12 +145,14 @@ class Request(APIResource):
         headers = token_auth()
         headers.pop('Content-Type')
         with open(file_path, 'rb') as fp:
+            fn = os.path.basename(file_path)
             req = requests.post(self.files_url,
-                          files={'file': fp.read() },
+                          files={'file': (fn, fp)},
                           data={'visibility': visibility },
                           headers=headers)
         if not req.ok:
             raise RuntimeError(req.content)
+        return req.json()
 
     def update_json_data(self):
         data = self.__class__.find(self.url)._json_data
