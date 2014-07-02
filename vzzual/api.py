@@ -180,11 +180,6 @@ class File(APIResource):
         else:
             return super(cls, File).create(**kwargs)
 
-    @classmethod
-    def find_by_id(cls, file_id):
-        url = base_url + "files/" + file_id
-        return cls.find(url)
-
     def download(self, saveAt=None):
         headers = token_auth()
         headers.pop('Content-Type')
