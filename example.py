@@ -1,10 +1,10 @@
 from __future__ import print_function
-import sys, os, re, time
+import os
+import sys
 
 # Checking dependencies
 try:
     import pprint
-    import json
     import vzzual
 except ImportError as e:
     print("Unable to resolve dependency:\n %s" % e)
@@ -12,12 +12,13 @@ except ImportError as e:
     sys.exit(1)
 
 # global variables
-current_dir      = os.path.dirname(os.path.realpath(__file__))
+current_dir = os.path.dirname(os.path.realpath(__file__))
 API_KEY_FILENAME = os.path.join(current_dir, 'vzzual.conf')
 
 # Exit if the api doesn't exit
 if not os.path.exists(API_KEY_FILENAME):
-    print("Please put your vzzual api key into a file called %s" % API_KEY_FILENAME)
+    print("Please put your vzzual api key into a file called %s" %
+          API_KEY_FILENAME)
     sys.exit(1)
 
 with open(API_KEY_FILENAME, 'r') as fp:
@@ -27,7 +28,8 @@ vzzual.init(token)
 sample_image = os.path.join(current_dir, 'images/sample.jpg')
 
 print("Creating Job .. ")
-req, results = vzzual.apply_image_filters(sample_image, ["facedetect", "exif", "thumbnail"])
+req, results = vzzual.apply_image_filters(
+    sample_image, ["facedetect", "exif", "thumbnail"])
 state = req.state
 
 if state == 'error':

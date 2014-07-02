@@ -10,6 +10,7 @@ api_key = None
 logger = logging.getLogger('vzzual')
 logging_enabled = True
 
+
 def init(token, **kwargs):
     global api_key, logger, logging_enabled
     api_key = token
@@ -20,17 +21,20 @@ def init(token, **kwargs):
     else:
         logger.setLevel(kwargs.pop('log_level', logging.DEBUG))
 
+
 def log(level, *args, **kwargs):
     if logging_enabled:
         method = getattr(logger, level)
         method(*args, **kwargs)
 
+
 def token_auth():
     if not api_key:
         raise RuntimeError("API key not set. Use vzzual.init(key).")
     auth = {"Authorization": "Token " + api_key,
-               "Content-Type": "application/json"}
+            "Content-Type": "application/json"}
     return auth
+
 
 def _api_request(method, url, data=None):
     headers = token_auth()
@@ -49,6 +53,7 @@ def _api_request(method, url, data=None):
         return r.json()
     else:
         return None
+
 
 def get_filters():
     return _api_request("get", base_url + "filters/")['results']
@@ -93,6 +98,7 @@ class APIResource(object):
     def __str__(self):
         return self.__repr__()
 
+
 class Request(APIResource):
     resource_type = "requests"
 
@@ -113,10 +119,9 @@ class Request(APIResource):
             self.update_json_data()
             return r['results']
 
-
     def get_files(self):
         r = _api_request("get", self.files_url)
-        return [File(r) for r in r['results']]
+        return [File(res) for res in r['results']]
 
     def get_logs(self):
         r = _api_request("get", self.logs_url)
@@ -132,8 +137,9 @@ class Request(APIResource):
             paths = [paths]
         for path in paths:
             if path.startswith('http://') or path.startswith('https://'):
-                out = _api_request('post', self.files_url,
-                            data={'url': path, 'visibility': visibility })
+                out = _api_request(
+                    'post', self.files_url,
+                    data={'url': path, 'visibility': visibility})
             else:
                 out = self._upload_file(path, visibility)
             if out:
@@ -147,9 +153,9 @@ class Request(APIResource):
         with open(file_path, 'rb') as fp:
             fn = os.path.basename(file_path)
             req = requests.post(self.files_url,
-                          files={'file': (fn, fp)},
-                          data={'visibility': visibility },
-                          headers=headers)
+                                files={'file': (fn, fp)},
+                                data={'visibility': visibility},
+                                headers=headers)
         if not req.ok:
             raise RuntimeError(req.content)
         return req.json()
@@ -158,6 +164,7 @@ class Request(APIResource):
         data = self.__class__.find(self.url)._json_data
         for key in data:
             setattr(self, key, data[key])
+
 
 class File(APIResource):
     resource_type = "files"
@@ -170,7 +177,7 @@ class File(APIResource):
                 headers = token_auth()
                 headers.pop('Content-Type')
                 req = requests.post(cls.resource_url(),
-                                    files={'file': fp.read() },
+                                    files={'file': fp.read()},
                                     data=kwargs, headers=headers)
             if not req.ok:
                 raise RuntimeError(req.content)
@@ -190,18 +197,18 @@ class File(APIResource):
 
         return req.content
 
+
 def apply_image_filters(filepath, filter_names=['facedetect']):
     available_filters = [x['name'] for x in get_filters()]
     if not len(filter_names):
         raise ValueError("You should specify atleast one filter among: {}",
-            available_filters)
+                         available_filters)
     for name in filter_names:
         if name not in available_filters:
             raise ValueError("%s is not supported filter by Vzzual." % name)
 
-    filters = [ { 'filter': name } for name in filter_names]
+    filters = [{'filter': name} for name in filter_names]
     req = Request.create(filters=filters)
     req.add_files(filepath, 'private')
     req.submit()
     return req, req.get_results(wait=True)
-
