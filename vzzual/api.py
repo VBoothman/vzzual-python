@@ -41,7 +41,7 @@ def _api_request(method, url, data=None):
     if not r.ok:
         try:
             detail = ": {}".format(r.json()['detail'])
-        except (KeyError, ValueError), e:
+        except (KeyError, ValueError) as e:
             detail = e
         raise RuntimeError("Error {} occured {}".format(
                            r.status_code, detail))
