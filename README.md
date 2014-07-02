@@ -15,6 +15,7 @@ Documentation is available at [http://www.vzzual.com/page_API.html](http://www.v
     req = vzzual.Request.create(
                     filters=[{ 'filter': 'facedetect' }, { 'filter': 'exif' }])
     req.add_files('image.jpg')
+    req.submit()
     results = req.get_results(wait=True)
 ```
 
