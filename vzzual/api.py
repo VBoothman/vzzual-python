@@ -3,12 +3,14 @@ import os.path
 import logging
 import json
 import time
+import sys
 import requests
 
 base_url = "https://api.vzzual.com/"
 api_key = None
 logger = logging.getLogger('vzzual')
 logging_enabled = True
+verify = True
 
 
 def init(token, **kwargs):
@@ -20,6 +22,16 @@ def init(token, **kwargs):
         logger.setLevel(logging.CRITICAL)  # effectively disables the logger
     else:
         logger.setLevel(kwargs.pop('log_level', logging.DEBUG))
+    if sys.version_info[0] == 2:
+        try:
+            import pyasn1
+            import ndg
+            import OpenSSL
+        except ImportError:
+            import warnings
+            warnings.warn("SSL not available, will not validate certificates")
+            global verify
+            verify = False
 
 
 def log(level, *args, **kwargs):
@@ -190,7 +202,7 @@ class File(APIResource):
     def download(self, saveAt=None):
         headers = token_auth()
         headers.pop('Content-Type')
-        req = requests.get(self.file_url, headers=headers, verify=False)
+        req = requests.get(self.file_url, headers=headers, verify=verify)
         if saveAt:
             with open(saveAt, 'wb') as fp:
                 fp.write(req.content)

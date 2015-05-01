@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import json
 import os
 import httpretty
@@ -82,7 +84,7 @@ def mock_request_result():
         _first_req = False
 
     def on_request_url(req, uri, headers):
-        print "\n{}: {}\n".format(uri, is_first_request())
+        print("\n{}: {}\n".format(uri, is_first_request()))
         if is_first_request():
             first_request_done()
             return [200, headers, body2]
@@ -197,7 +199,7 @@ class TestBase(unittest.TestCase):
 
     def test_download(self):
         mock_new_request()
-        vfile = vzzual.File.find_by_id('2PRcFB54AcB')
+        vfile = vzzual.File.find('https://api.vzzual.com/files/2PRcFB54AcB')
         self.assertIsNotNone(vfile.file_url)
 
         with open('tests/test.jpg', 'rb') as fp:
